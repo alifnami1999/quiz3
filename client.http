@@ -1,0 +1,21 @@
+
+
+
+GET http://localhost:4000/login
+Content-type:application/json
+
+{
+    "Username": "Alif",
+    "Password": "12345",
+}
+
+###
+
+GET  http://localhost:4000/bye
+
+###
+
+GET http://localhost:4000/
+
+###
+POST  http://localhost:4000/register
