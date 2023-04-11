@@ -19,3 +19,20 @@ GET http://localhost:4000/
 
 ###
 POST  http://localhost:4000/register
+Content-Type: application/json
+
+{
+    "username": "Soo",
+    "password": "98765",
+    "name": "Utem",
+    "email": "Soo@utem.edu.my"
+}
+
+###
+POST http://localhost:4000/login
+Content-Type: application/json
+
+{
+    "username": "Soo",
+    "password": "98765"
+}
