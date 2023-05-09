@@ -1,69 +1,110 @@
 const express = require('express')
 const app = express()
-const port = 4000
-const jwt = require('jsonwebtoken');
+const port = 3000
+const jwt = require('jsonwebtoken')
 
 app.use(express.json())
 
 app.post('/login', (req, res) => {
     console.log(req.body)
-    
+
     let result = login(req.body.username, req.body.password)
-    let token = generateToken(result)
-    res.send(token)
+
+    // let Token = generateToken(result)
+    // res.send(Token)
 })
 
 app.get('/', (req, res) => {
-  res.send('Hello UTeM!')
+  res.send('Hello World!')
 })
 
 app.get('/bye', verifyToken, (req, res) => {
-  res.send('Bye bye UTeM!')
+    res.send('Bubyeee Semua!')
 })
 
 app.post('/register', (req, res) => {
-  let result = register(req.body.username, req.body.password, req.body.name, req.body.email)
-  res.send(result)
+  res.send('Account Created.')
+})
+
+app.post('/register', (req, res) => {
+  let result = register(
+    req.body.username, 
+    req.body.password, 
+    req.body.name, 
+    req.body.email
+    )
+    res.send(Result)
 })
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-function login(reqUsername, reqPassword){
-  let matchUser = dbUsers.find(user => user.username == reqUsername)
-  if(!matchUser) return "User not found!"
-  if(matchUser.password == reqPassword){
-      return matchUser
-  }
-  else
+let dbUsers = [
   {
-      return "Invalid password!"
+    username: "Amsyar",
+    password: "1234",
+    name: "Alif",
+    email: "Amsyar@utem.edu.my"
   }
+]
+
+  async function login(requsername, reqpassword) {
+    // let matchUser = dbUsers.find(
+    //     user => user.username == username      //=> what to do with user
+    // )
+     let matchUser = await client.db('benr2434')
+        .collection('users')
+        .findOne({username:{ $eq: requsername} })
+
+    console.log(matchUser)
+    
+    if (!matchUser) return "User not found!"
+    if (matchUser.password == reqpassword) 
+    {
+        return matchUser
+    } else
+    {
+        return "Invalid password"
+    }
+    }
+
+// function register(requsername, reqpassword, reqname, reqemail) {
+//   dbUsers.push({
+//       username: requsername,
+//       password: reqpassword,
+//       name: reqname,
+//       email: reqemail
+//   })
+// }
+
+function register(requsername, reqpassword, reqname, reqemail) {
+  client.db('benr2434').collection('users').insertOne({
+      username: requsername,
+      password: reqpassword,
+      name: reqname,
+      email: reqemail
+  })
 }
-function register(reqUsername, reqPassword, reqName, reqEmail){
-  dbUsers.push({
-      username: reqUsername,
-      password: reqPassword,
-      name: reqName,
-      email:reqEmail
-})
-}
-function generateToken (userData){
-  const token = jwt.sign( 
+
+function generateToken(userData)
+{
+  const Token = jwt.sign
+  (
     userData,
-    'benrs2',
-    { expiresIn: 60 }
+    'inipassword',
+    {expiresIn: 60}
   );
-  return token
+  return Token
 }
-function verifyToken(req, res, next) {
+
+function verifyToken (req,res,next){
   let header = req.headers.authorization
-  console.log(header)
+  console.log (header)
 
-  let token = header.split(' ')[1]
+  let Token = header.split('')[1]
 
-  jwt.verify(token,'benrs2', function(err,decoded){
+  jwt.verify(Token, 'inipassword',function(err,decoded){
     if(err){
       res.send("Invalid Token")
     }
@@ -72,23 +113,19 @@ function verifyToken(req, res, next) {
   });
 }
 
-let dbUsers = [
-  {
-      username: "Alif",
-      password: "1234",
-      name: "Alif",
-      email: "Alif@utem.edu.my"
-  },
-  {
-      username: "Azriana",
-      password: "98765",
-      name: "Azriana",
-      email: "Azriana@gmail.com"
-  },
-  {
-      username: "Haikal",
-      password: "7890",
-      name: "Haikal",
-      email: "Haikal@gmail.com"
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://AlifHaikal:Haikal_990609@cluster0.0yspwz9.mongodb.net/?retryWrites=true&w=majority";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
   }
-]
+});
+
+client.connect().then(res => {
+  console.log(res)
+})
